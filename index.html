@@ -77,19 +77,6 @@
 
             frm = document.getElementById(formName);
 
-            //<!-- 장금 -->
-
-            if (formName === 'sinokorForm') {
-                // frm.action = `${url}/custom/sinokor-detail?blNo=SNKO012210300018`;
-                frm.action = url.concat('/custom/sinokor-detail?blNo=SNKO012210300018');
-            } else if (formName === 'trackForm') {
-                // frm.action = `${url}/custom/shipment-detail?trackMstId=df391df0-0c99-49fa-a318-f26590569b81`;
-                frm.action = url.concat('/custom/shipment-detail?trackMstId=df391df0-0c99-49fa-a318-f26590569b81');
-            } else if (formName === 'samsungForm') {
-              // frm.action = "https://txweb-vtrack-test.azurewebsites.net/custom/shipment-detail?blNo=HBL1";
-              frm.action = url.concat('/custom/shipment-detail?blNo=HBL1');
-            }
-
             if (formName === 'customForm') {
                 let customUrl;
                 if (isSinokor) {
@@ -159,13 +146,6 @@
 
 <body style="width: 100vw;">
 
-    <!-- 
-|   구분   | 장금 상선              | 삼성 로지텍          | trackMstId有        |
-| ------- | ---------------------- | ------------------- | ------------------- |
-| api Ver | v1.4                   | v2                  | v1                  |
-| user Id | 17088                  | 1824(임시 테스트용)  | X                   |
-| api 주소 | /ais/v1.4/track/cargo/| /ais/track/cargo/   | /ais/track/cargo/   | 
--->
 <div class="alert alert-dark" role="alert">
   <h4 class="alert-heading">Shipgo 커스텀 detail 화면 테스트</h4>
   <p>선사별 커스텀 shipgo-detail 페이지 테스트를 위한 화면입니다.</p>
@@ -179,9 +159,7 @@
   <p class="mb-0">
     3. 테스트 케이스는 3가지로 각각의 버튼을 클릭하면 자동으로 url 요청이 됩니다.
   </p>
-  <span style="margin-left: 10px; font-size: 13px; display: block;">1. 장금</span>
-  <span style="margin-left: 10px; font-size: 13px; display: block;">2. TrackMaster ID 있는 케이스</span>
-  <span style="margin-left: 10px; font-size: 13px; display: block;">3. 삼성 로지텍(장금 외 기타 선사)</span> 
+  
   <p class="mb-0">
     4. 우측 Custom 케이스를 추가하여 테스트 가능합니다.
   </p>
@@ -213,35 +191,7 @@
                             </label>
                         </div>
                     </li>
-                    <li class="list-group-item">
-                        <form name="sinokorForm" id="sinokorForm">
-
-                            <input type="hidden" name="txApiToken" value="473dba9f-9283-4ae5-8351-1c1dfdd06d52">
-                            <input type="hidden" name="Authorization" value="bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxNzA4OCIsIkFJU19BUElfQ0FSR09fVFJBQ0tfUE9SVENBTExfTE9HIjoiQUlTX0FQSV9DQVJHT19UUkFDS19QT1JUQ0FMTF9MT0ciLCJBSVNfQVBJX0NBUkdPX01VTFRJX0FQUExZIjoiQUlTX0FQSV9DQVJHT19NVUxUSV9BUFBMWSIsIkFJU19BUElfQ0FSR09fVFJBQ0tfTE9HIjoiQUlTX0FQSV9DQVJHT19UUkFDS19MT0ciLCJBSVNfQVBJX0NBUkdPX01PRElGWSI6IkFJU19BUElfQ0FSR09fTU9ESUZZIiwiQUlTX0FQSV9DQVJHT19BUFBMWSI6IkFJU19BUElfQ0FSR09fQVBQTFkiLCJhcGlWZXJzaW9uIjoidjEuNCIsImFwaVRva2VuIjoiNDczZGJhOWYtOTI4My00YWU1LTgzNTEtMWMxZGZkZDA2ZDUyIiwiYWlzQ29udHJhY3QiOnsiY29udHJhY3RTdGFydER0bSI6MTYxNDUyNDQwMDAwMCwiY29udHJhY3RFbmREdG0iOjE2MTcyMDI4MDAwMDB9LCJBSVNfQVBJX0NBUkdPX1RSQUNLX1ZTTCI6IkFJU19BUElfQ0FSR09fVFJBQ0tfVlNMIiwiQUlTX0FQSV9DQVJHT19NVUxUSV9NT0RJRlkiOiJBSVNfQVBJX0NBUkdPX01VTFRJX01PRElGWSIsImlhdCI6MTYxNzA3MTk2MCwiZXhwIjoxNjQ4NjA3OTYwfQ.B7_VOEfgSltIQoflt-5nWYHQ7qZnWwoFXDWIeVeSZFcroB4G0OjlH0rHG_zDc0QxP6jGKS5jkhXy_AaBCQypDw">
-                            <input type=button class="btn btn-success" onClick="postPopUp('sinokorForm')" value="장금 sinokor-detail" />
-                        </form>
-                    </li>
-                    <li class="list-group-item">
-                        <form name="trackForm" id="trackForm">
-                            <input type="hidden" name="txApiToken" value="091d716d-cb4b-4207-857c-5260ed3aec6a">
-                            <input type="hidden" name="Authorization" value="bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMDIwIiwiYXBpVmVyc2lvbiI6InYxIiwiYXBpVG9rZW4iOm51bGwsIkFJU19GUk9OVF9BRE1JTiI6IkFJU19GUk9OVF9BRE1JTiIsImFpc0NvbnRyYWN0Ijp7ImNvbnRyYWN0U3RhcnREdG0iOjE2MDk2ODYwMDAwMDAsImNvbnRyYWN0RW5kRHRtIjoxNjQxMjIyMDAwMDAwfSwiQUlTX0ZST05UIjoiQUlTX0ZST05UIiwiaWF0IjoxNjExODIwMjg2LCJleHAiOjE2NDMzNTYyODZ9.HIWydXP1YaCSapUh2MCZwIisyb_cfMCQQxpNvssUURfKhnH8Tl0PAQwastCmrHeOYe781NmFGytFS7EQYw9oug">
-
-                            <!-- <input type="hidden" name="start_route_position" value="[[36.008125, 129.362937],[36.005890, 129.322308],[35.863908, 129.211849],[35.109238, 129.077967],[35.085139, 128.844225]]">
-                <input type="hidden" name="end_route_position" value="[[51.950324, 4.428295],[51.518819, 7.442846],[53.502974, 10.041276]]"> -->
-                            <input type=button class="btn btn-danger" onClick="postPopUp('trackForm')" value="trackMstId 有" />
-                        </form>
-                    </li>
-                    <li class="list-group-item">
-                        <div id="shipgoMap">
-                            <div id="frame">
-                                <form name="samsungForm" id="samsungForm">
-                                    <input type="hidden" name="Authorization" value="bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxODI0IiwiYXBpVmVyc2lvbiI6InYxIiwiYWlzQ29udHJhY3QiOnsiY29udHJhY3RTdGFydER0bSI6MTYxNTc2OTY3ODYyMCwiY29udHJhY3RFbmREdG0iOjE2MTY5NzkyNzg2MjB9LCJBSVNfRlJPTlQiOiJBSVNfRlJPTlQiLCJpYXQiOjE2MTU5NTkwMDIsImV4cCI6MTYyMzczNTAwMn0.GHfxf0nTwmXeHWykYDK6PZLvyeadMRG1jxq0zbbVFCTKO29XcMAazTxVmBiofLeJ9BzUuqqJLhGTyldX3SFZRQ">
-                                </form>
-
-                            </div>
-                            <input type=button class="btn btn-primary" onClick="postPopUp('samsungForm')" value="삼성 로지텍">
-                        </div>
-                    </li>
+                    
                 </ul>
             </div>
         </div>
@@ -307,38 +257,6 @@
     </section>
 
     <iframe frameborder="0" style="border: 0; height: 800px; left: 0; width: 100%;" name="viewer"></iframe>
-
-
-
-    <!-- 장금 -->
-    <!-- <form name="sinokorForm" id="sinokorForm">
-
-        <input type="hidden" name="txApiToken" value="473dba9f-9283-4ae5-8351-1c1dfdd06d52">
-        <input type="hidden" name="Authorization" value="bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxNzA4OCIsIkFJU19BUElfQ0FSR09fVFJBQ0tfUE9SVENBTExfTE9HIjoiQUlTX0FQSV9DQVJHT19UUkFDS19QT1JUQ0FMTF9MT0ciLCJBSVNfQVBJX0NBUkdPX01VTFRJX0FQUExZIjoiQUlTX0FQSV9DQVJHT19NVUxUSV9BUFBMWSIsIkFJU19BUElfQ0FSR09fVFJBQ0tfTE9HIjoiQUlTX0FQSV9DQVJHT19UUkFDS19MT0ciLCJBSVNfQVBJX0NBUkdPX01PRElGWSI6IkFJU19BUElfQ0FSR09fTU9ESUZZIiwiQUlTX0FQSV9DQVJHT19BUFBMWSI6IkFJU19BUElfQ0FSR09fQVBQTFkiLCJhcGlWZXJzaW9uIjoidjEuNCIsImFwaVRva2VuIjoiNDczZGJhOWYtOTI4My00YWU1LTgzNTEtMWMxZGZkZDA2ZDUyIiwiYWlzQ29udHJhY3QiOnsiY29udHJhY3RTdGFydER0bSI6MTYxNDUyNDQwMDAwMCwiY29udHJhY3RFbmREdG0iOjE2MTcyMDI4MDAwMDB9LCJBSVNfQVBJX0NBUkdPX1RSQUNLX1ZTTCI6IkFJU19BUElfQ0FSR09fVFJBQ0tfVlNMIiwiQUlTX0FQSV9DQVJHT19NVUxUSV9NT0RJRlkiOiJBSVNfQVBJX0NBUkdPX01VTFRJX01PRElGWSIsImlhdCI6MTYxNzA3MTk2MCwiZXhwIjoxNjQ4NjA3OTYwfQ.B7_VOEfgSltIQoflt-5nWYHQ7qZnWwoFXDWIeVeSZFcroB4G0OjlH0rHG_zDc0QxP6jGKS5jkhXy_AaBCQypDw">
-        <input type=button class="btn btn-success" onClick="postPopUp('sinokorForm')" value="장금 sinokor-detail"/>
-    </form> -->
-
-
-    <!-- <form name="trackForm" id="trackForm"> -->
-    <!--     <input type="hidden" name="txApiToken" value="091d716d-cb4b-4207-857c-5260ed3aec6a">
-        <input type="hidden" name="Authorization" value="bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMDIwIiwiYXBpVmVyc2lvbiI6InYxIiwiYXBpVG9rZW4iOm51bGwsIkFJU19GUk9OVF9BRE1JTiI6IkFJU19GUk9OVF9BRE1JTiIsImFpc0NvbnRyYWN0Ijp7ImNvbnRyYWN0U3RhcnREdG0iOjE2MDk2ODYwMDAwMDAsImNvbnRyYWN0RW5kRHRtIjoxNjQxMjIyMDAwMDAwfSwiQUlTX0ZST05UIjoiQUlTX0ZST05UIiwiaWF0IjoxNjExODIwMjg2LCJleHAiOjE2NDMzNTYyODZ9.HIWydXP1YaCSapUh2MCZwIisyb_cfMCQQxpNvssUURfKhnH8Tl0PAQwastCmrHeOYe781NmFGytFS7EQYw9oug"> -->
-
-    <!-- <input type="hidden" name="start_route_position" value="[[36.008125, 129.362937],[36.005890, 129.322308],[35.863908, 129.211849],[35.109238, 129.077967],[35.085139, 128.844225]]">
-        <input type="hidden" name="end_route_position" value="[[51.950324, 4.428295],[51.518819, 7.442846],[53.502974, 10.041276]]"> -->
-    <!--         <input type=button class="btn btn-danger" onClick="postPopUp('trackForm')" value="trackMstId 有"/>
-    </form>
- -->
-
-    <!-- 삼성 로지텍 -->
-    <!-- <div id="shipgoMap">
-        <div id="frame">
-            <form name="samsungForm" id="samsungForm">
-                <input type="hidden" name="Authorization" value="bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxODI0IiwiYXBpVmVyc2lvbiI6InYxIiwiYWlzQ29udHJhY3QiOnsiY29udHJhY3RTdGFydER0bSI6MTYxNTc2OTY3ODYyMCwiY29udHJhY3RFbmREdG0iOjE2MTY5NzkyNzg2MjB9LCJBSVNfRlJPTlQiOiJBSVNfRlJPTlQiLCJpYXQiOjE2MTU5NTkwMDIsImV4cCI6MTYyMzczNTAwMn0.GHfxf0nTwmXeHWykYDK6PZLvyeadMRG1jxq0zbbVFCTKO29XcMAazTxVmBiofLeJ9BzUuqqJLhGTyldX3SFZRQ">
-            </form>
-            <iframe frameborder="0" style="border: 0; height: 500px; left: 0; position: absolute; top: 300px; width: 100%;" name="viewer"></iframe>
-        </div>
-        <input type=button class="btn btn-primary" onClick="getMapView('samsungForm')" value="삼성 로지텍">
-    </div> -->
 </body>
 
 </html>
