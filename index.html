@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Shipgo Custom Test page</title>
+    <style>
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+
+        /* Hide default HTML checkbox */
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        /* The slider */
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            -webkit-transition: .4s;
+            transition: .4s;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            -webkit-transition: .4s;
+            transition: .4s;
+        }
+
+        input:checked+.slider {
+            background-color: #2196F3;
+        }
+
+        input:focus+.slider {
+            box-shadow: 0 0 1px #2196F3;
+        }
+
+        input:checked+.slider:before {
+            -webkit-transform: translateX(26px);
+            -ms-transform: translateX(26px);
+            transform: translateX(26px);
+        }
+
+        /* Rounded sliders */
+        .slider.round {
+            border-radius: 34px;
+        }
+
+        .slider.round:before {
+            border-radius: 50%;
+        }
+    </style>
+    <script>
+        let targetting = 'local';
+        let view = 'window';
+        let isSinokor = false;
+
+        function postPopUp(formName, paramUrl) {
+            //http://local.tradlinx.com:8080 // https://test-shipgo.tradlinx.com
+            const url = targetting !== 'local' ? 'https://shipgo.tradlinx.com' : 'https://test-shipgo.tradlinx.com'
+
+            frm = document.getElementById(formName);
+
+            //<!-- 장금 -->
+
+            if (formName === 'sinokorForm') {
+                // frm.action = `${url}/custom/sinokor-detail?blNo=SNKO012210300018`;
+                frm.action = url.concat('/custom/sinokor-detail?blNo=SNKO012210300018');
+            } else if (formName === 'trackForm') {
+                // frm.action = `${url}/custom/shipment-detail?trackMstId=df391df0-0c99-49fa-a318-f26590569b81`;
+                frm.action = url.concat('/custom/shipment-detail?trackMstId=df391df0-0c99-49fa-a318-f26590569b81');
+            } else if (formName === 'samsungForm') {
+              // frm.action = "https://txweb-vtrack-test.azurewebsites.net/custom/shipment-detail?blNo=HBL1";
+              frm.action = url.concat('/custom/shipment-detail?blNo=HBL1');
+            }
+
+            if (formName === 'customForm') {
+                let customUrl;
+                if (isSinokor) {
+                    customUrl = url.concat('/custom/sinokor-detail');
+                } else {
+                    customUrl = url.concat('/custom/shipment-detail');
+                }
+                if (paramUrl) {
+                    customUrl = customUrl.concat('?' + paramUrl);
+                }
+                frm.action = customUrl;
+            }
+
+            console.group();
+            console.log(`%c URL 경로 확인: ${frm.action}`, "color: red");
+            console.log(`%c Form ⏬`, "color: red");
+            console.log(frm);
+            // console.log('url 경로 확인: ', frm.action);
+            console.groupEnd();
+
+            if (view === 'window') {
+                frm.target = "openViewer";
+
+                frm.method = "post";
+
+                frm.submit();
+                window.open('', 'openViewer');
+            } else {
+                frm.target = "viewer";
+                frm.method = "post";
+                frm.submit();
+            }
+        }
+
+        function changeTargeting(target) {
+            if (target.checked) {
+                targetting = 'server';
+            } else {
+                targetting = 'local';
+            }
+
+        }
+
+        function changeViewFormat(target) {
+            view = target;
+        }
+
+        function callCustomPopUp() {
+            document.getElementById('customApiToken').value = document.getElementById('inputApiToken').value;
+            document.getElementById('customAuthorization').value = document.getElementById('inputAuthorization').value;
+            const paramRadios = document.getElementsByName('customParamRadios');
+            let paramUrl;
+            paramRadios.forEach(inputData => {
+                if (inputData.checked) {
+                    paramUrl = inputData.value;
+                    paramUrl = paramUrl.concat('=' + document.getElementById('customParamData').value);
+                    return;
+                }
+            })
+
+            postPopUp('customForm', paramUrl);
+        }
+    </script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="shortcut icon" href="http://www.tradlinx.com/favicon.ico" type="image/x-icon"> 
+</head>
+
+<body style="width: 100vw;">
+
+    <!-- 
+|   구분   | 장금 상선              | 삼성 로지텍          | trackMstId有        |
+| ------- | ---------------------- | ------------------- | ------------------- |
+| api Ver | v1.4                   | v2                  | v1                  |
+| user Id | 17088                  | 1824(임시 테스트용)  | X                   |
+| api 주소 | /ais/v1.4/track/cargo/| /ais/track/cargo/   | /ais/track/cargo/   | 
+-->
+<div class="alert alert-dark" role="alert">
+  <h4 class="alert-heading">Shipgo 커스텀 detail 화면 테스트</h4>
+  <p>선사별 커스텀 shipgo-detail 페이지 테스트를 위한 화면입니다.</p>
+  <hr>
+  <p class="mb-0">
+    1. Live Server 활성화 버튼으로 서버 타게팅을 변경할 수 있습니다. (Test/Live)
+  </p>
+  <p class="mb-0">
+    2. 체크박스로 새창 활성화를 하거나 Iframe 호출을 선택할 수 있습니다.
+  </p>
+  <p class="mb-0">
+    3. 테스트 케이스는 3가지로 각각의 버튼을 클릭하면 자동으로 url 요청이 됩니다.
+  </p>
+  <span style="margin-left: 10px; font-size: 13px; display: block;">1. 장금</span>
+  <span style="margin-left: 10px; font-size: 13px; display: block;">2. TrackMaster ID 있는 케이스</span>
+  <span style="margin-left: 10px; font-size: 13px; display: block;">3. 삼성 로지텍(장금 외 기타 선사)</span> 
+  <p class="mb-0">
+    4. 우측 Custom 케이스를 추가하여 테스트 가능합니다.
+  </p>
+</div>
+
+    <section style="width:100%; display: flex; justify-content: space-around;">
+        <div>
+            <div class="card" style="width: 100%; margin: 10px; min-width: 450px; max-width: 700px;">
+                <div class="card-header" style="font-size: 20px; font-weight: bold; width: 100%;">
+                    Live Server 활성화 (Default: Test Server)
+                    <label class="switch" style="float: right">
+                        <input type="checkbox" onChange="changeTargeting(this)">
+                        <span class="slider round"></span>
+                    </label>
+
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" onClick="changeViewFormat('window')" checked>
+                            <label class="form-check-label" for="flexRadioDefault1">
+                                Window Open (새창 열기)
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" onClick="changeViewFormat('iframe')">
+                            <label class="form-check-label" for="flexRadioDefault2">
+                                Call Iframe (하단 Frame영역)
+                            </label>
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        <form name="sinokorForm" id="sinokorForm">
+
+                            <input type="hidden" name="txApiToken" value="473dba9f-9283-4ae5-8351-1c1dfdd06d52">
+                            <input type="hidden" name="Authorization" value="bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxNzA4OCIsIkFJU19BUElfQ0FSR09fVFJBQ0tfUE9SVENBTExfTE9HIjoiQUlTX0FQSV9DQVJHT19UUkFDS19QT1JUQ0FMTF9MT0ciLCJBSVNfQVBJX0NBUkdPX01VTFRJX0FQUExZIjoiQUlTX0FQSV9DQVJHT19NVUxUSV9BUFBMWSIsIkFJU19BUElfQ0FSR09fVFJBQ0tfTE9HIjoiQUlTX0FQSV9DQVJHT19UUkFDS19MT0ciLCJBSVNfQVBJX0NBUkdPX01PRElGWSI6IkFJU19BUElfQ0FSR09fTU9ESUZZIiwiQUlTX0FQSV9DQVJHT19BUFBMWSI6IkFJU19BUElfQ0FSR09fQVBQTFkiLCJhcGlWZXJzaW9uIjoidjEuNCIsImFwaVRva2VuIjoiNDczZGJhOWYtOTI4My00YWU1LTgzNTEtMWMxZGZkZDA2ZDUyIiwiYWlzQ29udHJhY3QiOnsiY29udHJhY3RTdGFydER0bSI6MTYxNDUyNDQwMDAwMCwiY29udHJhY3RFbmREdG0iOjE2MTcyMDI4MDAwMDB9LCJBSVNfQVBJX0NBUkdPX1RSQUNLX1ZTTCI6IkFJU19BUElfQ0FSR09fVFJBQ0tfVlNMIiwiQUlTX0FQSV9DQVJHT19NVUxUSV9NT0RJRlkiOiJBSVNfQVBJX0NBUkdPX01VTFRJX01PRElGWSIsImlhdCI6MTYxNzA3MTk2MCwiZXhwIjoxNjQ4NjA3OTYwfQ.B7_VOEfgSltIQoflt-5nWYHQ7qZnWwoFXDWIeVeSZFcroB4G0OjlH0rHG_zDc0QxP6jGKS5jkhXy_AaBCQypDw">
+                            <input type=button class="btn btn-success" onClick="postPopUp('sinokorForm')" value="장금 sinokor-detail" />
+                        </form>
+                    </li>
+                    <li class="list-group-item">
+                        <form name="trackForm" id="trackForm">
+                            <input type="hidden" name="txApiToken" value="091d716d-cb4b-4207-857c-5260ed3aec6a">
+                            <input type="hidden" name="Authorization" value="bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMDIwIiwiYXBpVmVyc2lvbiI6InYxIiwiYXBpVG9rZW4iOm51bGwsIkFJU19GUk9OVF9BRE1JTiI6IkFJU19GUk9OVF9BRE1JTiIsImFpc0NvbnRyYWN0Ijp7ImNvbnRyYWN0U3RhcnREdG0iOjE2MDk2ODYwMDAwMDAsImNvbnRyYWN0RW5kRHRtIjoxNjQxMjIyMDAwMDAwfSwiQUlTX0ZST05UIjoiQUlTX0ZST05UIiwiaWF0IjoxNjExODIwMjg2LCJleHAiOjE2NDMzNTYyODZ9.HIWydXP1YaCSapUh2MCZwIisyb_cfMCQQxpNvssUURfKhnH8Tl0PAQwastCmrHeOYe781NmFGytFS7EQYw9oug">
+
+                            <!-- <input type="hidden" name="start_route_position" value="[[36.008125, 129.362937],[36.005890, 129.322308],[35.863908, 129.211849],[35.109238, 129.077967],[35.085139, 128.844225]]">
+                <input type="hidden" name="end_route_position" value="[[51.950324, 4.428295],[51.518819, 7.442846],[53.502974, 10.041276]]"> -->
+                            <input type=button class="btn btn-danger" onClick="postPopUp('trackForm')" value="trackMstId 有" />
+                        </form>
+                    </li>
+                    <li class="list-group-item">
+                        <div id="shipgoMap">
+                            <div id="frame">
+                                <form name="samsungForm" id="samsungForm">
+                                    <input type="hidden" name="Authorization" value="bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxODI0IiwiYXBpVmVyc2lvbiI6InYxIiwiYWlzQ29udHJhY3QiOnsiY29udHJhY3RTdGFydER0bSI6MTYxNTc2OTY3ODYyMCwiY29udHJhY3RFbmREdG0iOjE2MTY5NzkyNzg2MjB9LCJBSVNfRlJPTlQiOiJBSVNfRlJPTlQiLCJpYXQiOjE2MTU5NTkwMDIsImV4cCI6MTYyMzczNTAwMn0.GHfxf0nTwmXeHWykYDK6PZLvyeadMRG1jxq0zbbVFCTKO29XcMAazTxVmBiofLeJ9BzUuqqJLhGTyldX3SFZRQ">
+                                </form>
+
+                            </div>
+                            <input type=button class="btn btn-primary" onClick="postPopUp('samsungForm')" value="삼성 로지텍">
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="card" style="width: 98%; margin: 10px; min-width: 450px; max-width: 700px">
+            <div class="card-header" style="font-size: 20px; font-weight: bold; width: 100%;">
+                Custom 직접 입력 호출
+
+            </div>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item">
+                    txApiToken
+                    <input type="text" style="float: right; width: 100%" id="inputApiToken">
+                </li>
+                <li class="list-group-item">
+                    Authorization
+                    <input type="text" style="float: right; width: 100%" id="inputAuthorization">
+                </li>
+                <li class="list-group-item">
+                    장금상선 활성화 (Default: 장금제외 선사)
+                    <label class="switch" style="float: right;">
+                        <input type="checkbox" onChange="isSinokor = !isSinokor">
+                        <span class="slider round"></span>
+                    </label>
+                </li>
+                <li class="list-group-item">
+                    Param 체크
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="customParamRadios" id="customParamRadios1" value="trackMstId" checked>
+                        <label class="form-check-label" for="customParamRadios1">
+                            Track Master Id
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="customParamRadios" id="customParamRadios2" value="blNo">
+                        <label class="form-check-label" for="customParamRadios2">
+                            BlNo
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="customParamRadios" id="customParamRadios3" value="cntrNo">
+                        <label class="form-check-label" for="customParamRadios3">
+                            cntrNo
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="customParamRadios" id="customParamRadios4" value="po">
+                        <label class="form-check-label" for="customParamRadios4">
+                            Po
+                        </label>
+                    </div>
+                    <input type="text" style="width: 100%" id="customParamData">
+                </li>
+                <li class="list-group-item">
+                    <form name="customForm" id="customForm">
+                        <input type="hidden" name="txApiToken" id="customApiToken" value="">
+                        <input type="hidden" name="Authorization" id="customAuthorization" value="">
+                        <input type=button class="btn btn-info" onClick="callCustomPopUp()" value="Custom 호출" style="float: right" />
+                    </form>
+                </li>
+            </ul>
+        </div>
+
+    </section>
+
+    <iframe frameborder="0" style="border: 0; height: 800px; left: 0; width: 100%;" name="viewer"></iframe>
+
+
+
+    <!-- 장금 -->
+    <!-- <form name="sinokorForm" id="sinokorForm">
+
+        <input type="hidden" name="txApiToken" value="473dba9f-9283-4ae5-8351-1c1dfdd06d52">
+        <input type="hidden" name="Authorization" value="bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxNzA4OCIsIkFJU19BUElfQ0FSR09fVFJBQ0tfUE9SVENBTExfTE9HIjoiQUlTX0FQSV9DQVJHT19UUkFDS19QT1JUQ0FMTF9MT0ciLCJBSVNfQVBJX0NBUkdPX01VTFRJX0FQUExZIjoiQUlTX0FQSV9DQVJHT19NVUxUSV9BUFBMWSIsIkFJU19BUElfQ0FSR09fVFJBQ0tfTE9HIjoiQUlTX0FQSV9DQVJHT19UUkFDS19MT0ciLCJBSVNfQVBJX0NBUkdPX01PRElGWSI6IkFJU19BUElfQ0FSR09fTU9ESUZZIiwiQUlTX0FQSV9DQVJHT19BUFBMWSI6IkFJU19BUElfQ0FSR09fQVBQTFkiLCJhcGlWZXJzaW9uIjoidjEuNCIsImFwaVRva2VuIjoiNDczZGJhOWYtOTI4My00YWU1LTgzNTEtMWMxZGZkZDA2ZDUyIiwiYWlzQ29udHJhY3QiOnsiY29udHJhY3RTdGFydER0bSI6MTYxNDUyNDQwMDAwMCwiY29udHJhY3RFbmREdG0iOjE2MTcyMDI4MDAwMDB9LCJBSVNfQVBJX0NBUkdPX1RSQUNLX1ZTTCI6IkFJU19BUElfQ0FSR09fVFJBQ0tfVlNMIiwiQUlTX0FQSV9DQVJHT19NVUxUSV9NT0RJRlkiOiJBSVNfQVBJX0NBUkdPX01VTFRJX01PRElGWSIsImlhdCI6MTYxNzA3MTk2MCwiZXhwIjoxNjQ4NjA3OTYwfQ.B7_VOEfgSltIQoflt-5nWYHQ7qZnWwoFXDWIeVeSZFcroB4G0OjlH0rHG_zDc0QxP6jGKS5jkhXy_AaBCQypDw">
+        <input type=button class="btn btn-success" onClick="postPopUp('sinokorForm')" value="장금 sinokor-detail"/>
+    </form> -->
+
+
+    <!-- <form name="trackForm" id="trackForm"> -->
+    <!--     <input type="hidden" name="txApiToken" value="091d716d-cb4b-4207-857c-5260ed3aec6a">
+        <input type="hidden" name="Authorization" value="bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMDIwIiwiYXBpVmVyc2lvbiI6InYxIiwiYXBpVG9rZW4iOm51bGwsIkFJU19GUk9OVF9BRE1JTiI6IkFJU19GUk9OVF9BRE1JTiIsImFpc0NvbnRyYWN0Ijp7ImNvbnRyYWN0U3RhcnREdG0iOjE2MDk2ODYwMDAwMDAsImNvbnRyYWN0RW5kRHRtIjoxNjQxMjIyMDAwMDAwfSwiQUlTX0ZST05UIjoiQUlTX0ZST05UIiwiaWF0IjoxNjExODIwMjg2LCJleHAiOjE2NDMzNTYyODZ9.HIWydXP1YaCSapUh2MCZwIisyb_cfMCQQxpNvssUURfKhnH8Tl0PAQwastCmrHeOYe781NmFGytFS7EQYw9oug"> -->
+
+    <!-- <input type="hidden" name="start_route_position" value="[[36.008125, 129.362937],[36.005890, 129.322308],[35.863908, 129.211849],[35.109238, 129.077967],[35.085139, 128.844225]]">
+        <input type="hidden" name="end_route_position" value="[[51.950324, 4.428295],[51.518819, 7.442846],[53.502974, 10.041276]]"> -->
+    <!--         <input type=button class="btn btn-danger" onClick="postPopUp('trackForm')" value="trackMstId 有"/>
+    </form>
+ -->
+
+    <!-- 삼성 로지텍 -->
+    <!-- <div id="shipgoMap">
+        <div id="frame">
+            <form name="samsungForm" id="samsungForm">
+                <input type="hidden" name="Authorization" value="bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxODI0IiwiYXBpVmVyc2lvbiI6InYxIiwiYWlzQ29udHJhY3QiOnsiY29udHJhY3RTdGFydER0bSI6MTYxNTc2OTY3ODYyMCwiY29udHJhY3RFbmREdG0iOjE2MTY5NzkyNzg2MjB9LCJBSVNfRlJPTlQiOiJBSVNfRlJPTlQiLCJpYXQiOjE2MTU5NTkwMDIsImV4cCI6MTYyMzczNTAwMn0.GHfxf0nTwmXeHWykYDK6PZLvyeadMRG1jxq0zbbVFCTKO29XcMAazTxVmBiofLeJ9BzUuqqJLhGTyldX3SFZRQ">
+            </form>
+            <iframe frameborder="0" style="border: 0; height: 500px; left: 0; position: absolute; top: 300px; width: 100%;" name="viewer"></iframe>
+        </div>
+        <input type=button class="btn btn-primary" onClick="getMapView('samsungForm')" value="삼성 로지텍">
+    </div> -->
+</body>
+
+</html>
