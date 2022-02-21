@@ -73,7 +73,8 @@
 
         function postPopUp(formName, paramUrl) {
             //http://local.tradlinx.com:8080 // https://test-shipgo.tradlinx.com
-            const url = targetting !== 'local' ? 'https://shipgo.tradlinx.com' : 'https://test-shipgo.tradlinx.com'
+            // const url = targetting !== 'local' ? 'https://shipgo.tradlinx.com' : 'https://test-shipgo.tradlinx.com'
+            const url = targetting !== 'local' ? 'https://shipgo.tradlinx.com' : 'https://local.tradlinx.com:8080'
 
             frm = document.getElementById(formName);
 
